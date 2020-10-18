@@ -20,6 +20,31 @@ router.get('/:id', async (req, res, next) => {
     }
 })
 
-
+router.post('/', async (req, res, next) => {
+    try{
+        if(Object.keys(req.body) === 0){
+            return res.status(404).json({
+                errorMessage: "Please input the car info"
+            })
+        } else if(!req.body.VIN) {
+            return res.status(404).json({
+                errorMessage: "Please input the car VIN"
+            })
+        } else if(!req.body.make){
+            return res.status(404).json({
+                errorMessage: "Please input the car make"
+            })
+        } else if(!req.body.model){
+            return res.status(404).json({
+                errorMessage: "Please input the car model"
+            })
+        } 
+            const [id] = await database("car-dealer").insert(req.body);
+            const newCar = await database("car-dealer").where({ id }).first();
+            return res.status(200).json(newCar);
+    } catch(error){
+        next(error)
+    }
+})
 
 module.exports = router;
